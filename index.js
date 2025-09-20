@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ===== CONFIG =====
-const BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'; // replace with your bot token
+const BOT_TOKEN = '8433056245:AAHvLCh443KxXCzv43EGEl7B48dhbz_OSLM'; // replace with your bot token
 const OWNER_ID = 8801405706180; // your owner number
 
 const bot = new Telegraf(BOT_TOKEN);
