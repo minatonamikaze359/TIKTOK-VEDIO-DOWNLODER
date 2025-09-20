@@ -1,28 +1,28 @@
+require('dotenv').config();
 const { Telegraf } = require('telegraf');
-const bot = new Telegraf('8433056245:AAHvLCh443KxXCzv43EGEl7B48dhbz_OSLM');
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Owner phone/ID (change this to your Telegram user ID)
-const OWNER_ID = 8801405706180; // Replace with your real Telegram numeric ID
+// Owner ID (Change this to your Telegram numeric ID)
+const OWNER_ID = 8801405706180; // Replace with your own ID
 
 // In-memory user data (demo only)
 const users = {};
 const sessions = {};
 
-// Helper to check if logged in
 function isLoggedIn(ctx) {
   return sessions[ctx.from.id];
 }
 
-// Helper to check if user is owner
 function isOwner(ctx) {
   return ctx.from.id === OWNER_ID;
 }
 
-// Commands
+// Start Command
 bot.start((ctx) => {
   ctx.reply(`👋 Welcome, ${ctx.from.first_name}! Type /help to see all commands.`);
 });
 
+// Help Command
 bot.command('help', (ctx) => {
   ctx.reply(`
 📖 Available Commands:
@@ -44,6 +44,7 @@ bot.command('help', (ctx) => {
 `);
 });
 
+// Register Command
 bot.command('register', (ctx) => {
   const id = ctx.from.id;
   if (users[id]) return ctx.reply('⚠️ You already have an account! Use /login.');
@@ -52,14 +53,17 @@ bot.command('register', (ctx) => {
   ctx.reply('✅ Account created! Use /login to access it.');
 });
 
+// Login Command
 bot.command('login', (ctx) => {
   const id = ctx.from.id;
   if (!users[id]) return ctx.reply('❌ No account found. Please /register first.');
 
   sessions[id] = true;
+  if (isOwner(ctx)) users[id].balance = 999999999999; // Unlimited balance for owner
   ctx.reply(`✅ Logged in as ${users[id].username}`);
 });
 
+// Logout Command
 bot.command('logout', (ctx) => {
   const id = ctx.from.id;
   if (sessions[id]) {
@@ -69,12 +73,14 @@ bot.command('logout', (ctx) => {
   ctx.reply('⚠️ You are not logged in.');
 });
 
+// Balance Command
 bot.command('balance', (ctx) => {
   const id = ctx.from.id;
   if (!isLoggedIn(ctx)) return ctx.reply('Please /login first.');
   ctx.reply(`💰 Your balance: ${users[id].balance}`);
 });
 
+// Send Command
 bot.command('send', (ctx) => {
   const id = ctx.from.id;
   if (!isLoggedIn(ctx)) return ctx.reply('Please /login first.');
@@ -95,6 +101,7 @@ bot.command('send', (ctx) => {
   ctx.reply(`✅ Sent ${amount} to ${args[1]}! Your new balance: ${users[id].balance}`);
 });
 
+// Profile Command
 bot.command('profile', (ctx) => {
   const id = ctx.from.id;
   if (!isLoggedIn(ctx)) return ctx.reply('Please /login first.');
@@ -104,6 +111,7 @@ Username: ${user.username}
 Balance: ${user.balance}`);
 });
 
+// Update Username
 bot.command('update', (ctx) => {
   const id = ctx.from.id;
   if (!isLoggedIn(ctx)) return ctx.reply('Please /login first.');
@@ -120,6 +128,7 @@ bot.command('update', (ctx) => {
   ctx.reply(`✅ Updated your ${key} to ${value}`);
 });
 
+// Reset Account
 bot.command('reset', (ctx) => {
   const id = ctx.from.id;
   if (!isLoggedIn(ctx)) return ctx.reply('Please /login first.');
