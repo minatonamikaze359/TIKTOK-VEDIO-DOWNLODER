@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WhatsApp Ban Appeal Generator</title>
+  <style>
+    :root{
+      --neon: #00ff99;
+      --neon-2: #00cc77;
+      --bg: #000;
+      --card: #0f0f0f;
+      --muted: #888;
+      --maxw: 760px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(0,255,153,0.03), transparent 10%),
+        linear-gradient(180deg,#000 0%, #030303 100%);
+      color:var(--neon);
+      font-family: "Courier New", monospace;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:28px;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* ===== canvas animation in background ===== */
+    #ddosCanvas{
+      position:fixed;
+      left:0; top:0;
+      width:100vw; height:100vh;
+      z-index:0;
+      pointer-events:none; /* purely visual */
+      opacity:0.14;
+      mix-blend-mode:screen;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:var(--maxw);
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      z-index:5; /* above canvas */
+      position:relative;
+    }
+
+    header{
+      grid-column:1/-1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:6px;
+    }
+    h1{
+      margin:0;
+      font-size:1.2rem;
+      text-shadow:0 0 8px rgba(0,255,153,0.08);
+    }
+    .brand-sub{color:var(--muted); font-size:12px}
+
+    .card{
+      background: linear-gradient(180deg, rgba(0,255,153,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(0,255,153,0.12);
+      padding:18px;
+      border-radius:10px;
+      box-shadow: 0 6px 30px rgba(0,255,153,0.03);
+    }
+
+    /* form column */
+    .form-card .row{margin-top:12px}
+    label{display:block; font-weight:bold; font-size:13px}
+    input, select, textarea{
+      width:100%;
+      margin-top:8px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid rgba(0,255,153,0.12);
+      background:#0b0b0b;
+      color:var(--neon);
+      font-family:inherit;
+      font-size:14px;
+    }
+    textarea{min-height:96px; resize:vertical}
+
+    .btn{
+      display:inline-block;
+      width:100%;
+      padding:12px;
+      margin-top:14px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      font-weight:bold;
+      font-family:inherit;
+      background:var(--neon);
+      color:#000;
+      transition:all .18s ease;
+    }
+    .btn:hover{background:var(--neon-2); transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,255,153,0.08)}
+
+    .small{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    /* right column */
+    .right-col{display:flex; flex-direction:column; gap:12px}
+    .recent-list{max-height:220px; overflow:auto; padding:6px; border-radius:8px}
+    .recent-item{padding:8px; border-radius:6px; border:1px solid rgba(0,255,153,0.06); margin-bottom:8px; font-size:13px}
+    .pill{display:inline-block; padding:4px 8px; border-radius:999px; background:rgba(0,255,153,0.04); color:var(--neon); font-size:12px; margin-left:6px}
+
+    .tips{font-size:13px; color:var(--muted); line-height:1.45}
+    .disclaimer{font-size:12px; color:#9aa; text-align:center; margin-top:8px}
+
+    /* overlay while redirecting */
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
+      z-index:1200;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .overlay.show{opacity:1; pointer-events:auto}
+    .box{
+      background: #070707;
+      padding:18px 22px;
+      border-radius:10px;
+      text-align:center;
+      border:1px solid rgba(0,255,153,0.08);
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      color:var(--neon);
+    }
+    .loader{
+      width:40px; height:40px; margin:10px auto 6px; position:relative;
+      border-radius:50%; border:3px solid rgba(0,255,153,0.08);
+    }
+    .loader::after{
+      content:""; position:absolute; inset:4px; border-radius:50%; border:3px solid var(--neon);
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+    /* ddos badge */
+    .ddos-badge{
+      position:fixed;
+      bottom:18px;
+      left:18px;
+      z-index:800;
+      font-size:13px;
+      background:rgba(0,0,0,0.6);
+      border:1px solid rgba(0,255,153,0.08);
+      color:var(--neon);
+      padding:8px 10px;
+      border-radius:8px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .toggle{
+      background:#0b0b0b; border:1px solid rgba(0,255,153,0.06); padding:6px 8px; border-radius:6px; cursor:pointer;
+      font-family:inherit; color:var(--neon); font-size:13px;
+    }
+
+    /* responsiveness */
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr; padding-bottom:30px}
+      .right-col{order:2}
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Decorative canvas animation (visual only) -->
+  <canvas id="ddosCanvas" aria-hidden="true"></canvas>
+
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>WhatsApp Ban Appeal Generator</h1>
+        <div class="brand-sub">Automate a clear support request — opens your email app</div>
+      </div>
+      <div style="text-align:right">
+        <div class="brand-sub">© 2025 Hacker's Hideout</div>
+      </div>
+    </header>
+
+    <!-- left: form -->
+    <section class="card form-card">
+      <div style="display:flex; gap:10px; align-items:center">
+        <strong style="font-size:14px">Create Appeal</strong>
+        <span class="pill" id="status-pill">Ready</span>
+      </div>
+
+      <div class="row">
+        <label for="email">Sender Email (your email)</label>
+        <input id="email" type="email" placeholder="you@gmail.com (used in message body)" required>
+      </div>
+
+      <div class="row">
+        <label for="country">Country Code</label>
+        <select id="country">
+          <option value="+880" selected>Bangladesh (+880)</option>
+          <option value="+91">India (+91)</option>
+          <option value="+1">United States (+1)</option>
+          <option value="+44">United Kingdom (+44)</option>
+          <option value="+61">Australia (+61)</option>
+          <option value="+92">Pakistan (+92)</option>
+          <option value="+94">Sri Lanka (+94)</option>
+          <option value="+977">Nepal (+977)</option>
+          <option value="+65">Singapore (+65)</option>
+          <option value="+81">Japan (+81)</option>
+          <option value="+49">Germany (+49)</option>
+          <option value="+33">France (+33)</option>
+          <option value="+54">Argentina (+54)</option>
+          <option value="+971">United Arab Emirates (+971)</option>
+          <option value="+93">Afghanistan (+93)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="phone">Phone Number (without leading zero)</label>
+        <input id="phone" type="text" placeholder="1712345678 (no leading 0)">
+      </div>
+
+      <div class="row">
+        <label for="issue">Issue Type</label>
+        <select id="issue">
+          <option value="appeal">Appeal / Account Ban</option>
+          <option value="registration">Registration Issue</option>
+          <option value="2fa">2FA / Verification</option>
+          <option value="hacked">Account Hacked</option>
+          <option value="lost">Lost/Stolen</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="reason">Reason for Ban (brief)</label>
+        <textarea id="reason" placeholder="Explain briefly why you think the ban was a mistake."></textarea>
+      </div>
+
+      <button class="btn" id="submitBtn">Submit Request & Open Email</button>
+
+      <div class="small">
+        <strong>Note:</strong> This tool prepares and opens a pre-filled email to WhatsApp support (support@support.whatsapp.com). Final decision is made by WhatsApp.
+      </div>
+    </section>
+
+    <!-- right: recent / tips -->
+    <aside class="right-col">
+      <div class="card">
+        <strong>Recent Submissions</strong>
+        <div class="recent-list" id="recentList" style="margin-top:10px">
+          <!-- populated by JS -->
+        </div>
+        <div class="small" style="margin-top:8px">Saved locally in your browser. Not shared with anyone.</div>
+      </div>
+
+      <div class="card tips">
+        <strong>Tips to improve the chance</strong>
+        <ul style="padding-left:18px; margin:10px 0 0 0">
+          <li>Use the same email and number linked to your account.</li>
+          <li>Choose the correct issue type (e.g. "hacked" if hacked).</li>
+          <li>Keep the message short and factual — avoid emotional language.</li>
+          <li>Wait 48–72 hours before resubmitting if not responded.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="text-align:center; font-size:13px; color:var(--muted)">
+        This website is not affiliated with WhatsApp or Meta. It automates preparing the email only.
+      </div>
+    </aside>
+  </div>
+
+  <!-- overlay while redirecting -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="box">
+      <div class="loader" aria-hidden="true"></div>
+      <div id="overlayText">Redirecting to email app…</div>
+      <div class="small" style="margin-top:6px">If nothing opens, copy the prepared message and email <code>support@support.whatsapp.com</code> manually.</div>
+    </div>
+  </div>
+
+  <!-- ddos animation toggle badge -->
+  <div class="ddos-badge" role="region" aria-label="DDoS animation control">
+    <div style="font-weight:700">DDOS VISUAL</div>
+    <button id="toggleAnim" class="toggle" aria-pressed="true">ON</button>
+  </div>
+
+  <script>
+    // -----------------------
+    // Recent submissions (localStorage)
+    // -----------------------
+    const recentKey = 'wa_appeal_recent_v1';
+    const maxRecent = 12;
+
+    function fmtDate(d){
+      const dt = new Date(d);
+      return dt.toLocaleString();
+    }
+
+    function loadRecent(){
+      try{
+        const raw = localStorage.getItem(recentKey);
+        return raw ? JSON.parse(raw) : [];
+      }catch(e){ return [] }
+    }
+    function saveRecent(arr){
+      localStorage.setItem(recentKey, JSON.stringify(arr.slice(0, maxRecent)));
+    }
+
+    function renderRecent(){
+      const list = document.getElementById('recentList');
+      list.innerHTML = '';
+      const arr = loadRecent();
+      if(!arr.length){
+        list.innerHTML = '<div class="small" style="color:var(--muted)">No recent submissions yet.</div>';
+        return;
+      }
+      arr.forEach(r=>{
+        const div = document.createElement('div');
+        div.className = 'recent-item';
+        div.innerHTML = `<strong>${r.country}${r.phone}</strong> — ${r.issue} <div class="small" style="margin-top:6px">${r.email} • ${fmtDate(r.time)}</div>`;
+        list.appendChild(div);
+      });
+    }
+
+    // prepare mailto content
+    function prepareMessage({nameEmail, country, phone, issue, reason}){
+      const subject = encodeURIComponent('Request to Restore My WhatsApp Account');
+      const bodyLines = [
+        `Dear WhatsApp Support Team,`,
+        ``,
+        `My phone number: ${country}${phone}`,
+        `Issue type: ${issue}`,
+        ``,
+        `Description: ${reason || 'N/A'}`,
+        ``,
+        `Please contact me at: ${nameEmail}`,
+        ``,
+        `Thank you,`,
+        `— ${nameEmail}`
+      ];
+      const body = encodeURIComponent(bodyLines.join('\n'));
+      return {subject, body};
+    }
+
+    // overlay
+    function showOverlay(show=true){
+      const ov = document.getElementById('overlay');
+      if(show){ ov.classList.add('show'); ov.setAttribute('aria-hidden','false') }
+      else { ov.classList.remove('show'); ov.setAttribute('aria-hidden','true') }
+    }
+
+    // submit handler
+    document.getElementById('submitBtn').addEventListener('click',()=>{
+      const email = document.getElementById('email').value.trim();
+      const country = document.getElementById('country').value;
+      const phone = document.getElementById('phone').value.trim();
+      const issueSelect = document.getElementById('issue');
+      const issue = issueSelect.options[issueSelect.selectedIndex].text;
+      const reason = document.getElementById('reason').value.trim();
+
+      if(!email || !phone){
+        alert('Please fill your email and phone number.');
+        return;
+      }
+
+      // store recent locally
+      const rec = loadRecent();
+      rec.unshift({email, country, phone, issue:issue.toLowerCase(), reason, time: Date.now()});
+      saveRecent(rec);
+      renderRecent();
+
+      // prepare mailto
+      const {subject, body} = prepareMessage({
+        nameEmail: email,
+        country,
+        phone,
+        issue,
+        reason
+      });
+
+      // overlay then redirect
+      showOverlay(true);
+      setTimeout(()=>{
+        const to = 'support@support.whatsapp.com';
+        const mailto = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${body}`;
+        window.location.href = mailto;
+        setTimeout(()=> showOverlay(false), 2500);
+      }, 700);
+    });
+
+    // init recent list
+    renderRecent();
+
+    // -----------------------
+    // DDoS-style canvas animation (visual only)
+    // - Particles emit from left/right towards a pulsing target
+    // - No network activity, purely decorative
+    // -----------------------
+    const canvas = document.getElementById('ddosCanvas');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    let particles = [];
+    const maxParticles = 220; // visual density
+    let animEnabled = true;
+
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+
+    function resize(){
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+
+    // target sits near center-right
+    const target = { x: W * 0.72, y: H * 0.45, baseR: 26, pulse:0 };
+
+    function spawnPacket(side){
+      // side: 'left' | 'right' | 'top' | 'random'
+      const edge = side || (Math.random() < 0.5 ? 'left' : 'right');
+      let x = edge === 'left' ? -10 : (edge === 'right' ? W+10 : rand(0,W));
+      let y = edge === 'top' ? -10 : rand(H*0.05, H*0.95);
+      const speed = rand(1.2, 5.2);
+      const angle = Math.atan2(target.y - y, target.x - x);
+      const vx = Math.cos(angle) * speed + rand(-0.3,0.3);
+      const vy = Math.sin(angle) * speed + rand(-0.3,0.3);
+      const life = rand(80, 240);
+      const size = rand(1,3.6);
+      const opacity = rand(0.14, 0.38);
+      particles.push({x,y,vx,vy,life,age:0,size,opacity});
+      if(particles.length > maxParticles) particles.shift();
+    }
+
+    function drawTarget(){
+      // pulsing target circle
+      target.pulse += 0.06;
+      const r = target.baseR + Math.sin(target.pulse) * 6;
+      // outer halo
+      const g = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, r*4);
+      g.addColorStop(0, 'rgba(0,255,153,0.08)');
+      g.addColorStop(1, 'rgba(0,255,153,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, r*4, 0, Math.PI*2);
+      ctx.fill();
+
+      // central ring
+      ctx.strokeStyle = 'rgba(0,255,153,0.28)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, r, 0, Math.PI*2);
+      ctx.stroke();
+
+      // small center dot
+      ctx.fillStyle = 'rgba(0,255,153,0.95)';
+      ctx.beginPath();
+      ctx.arc(target.x, target.y, 3.2, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    function render(){
+      if(!animEnabled){
+        ctx.clearRect(0,0,W,H);
+        return;
+      }
+
+      // subtle background noise lines (static grid effect)
+      ctx.clearRect(0,0,W,H);
+      ctx.globalCompositeOperation = 'lighter';
+
+      // spawn a few packets per frame (density)
+      const spawnCount = Math.floor(rand(1,4));
+      for(let i=0;i<spawnCount;i++){
+        const sideChance = Math.random();
+        if(sideChance < 0.54) spawnPacket('left');
+        else if(sideChance < 0.92) spawnPacket('right');
+        else spawnPacket('top');
+      }
+
+      // draw particles
+      for(let i = particles.length-1; i >= 0; i--){
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.age++;
+        // fade as age increases
+        const lifeRatio = 1 - p.age / p.life;
+        const alpha = p.opacity * Math.max(lifeRatio, 0);
+
+        // glow trail
+        ctx.beginPath();
+        ctx.moveTo(p.x - p.vx*1.6, p.y - p.vy*1.6);
+        ctx.lineTo(p.x, p.y);
+        ctx.lineWidth = Math.max(p.size*0.8, 0.8);
+        ctx.strokeStyle = `rgba(0,255,153,${alpha*0.9})`;
+        ctx.stroke();
+
+        // head
+        ctx.fillStyle = `rgba(0,255,153,${alpha})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fill();
+
+        // small spark when close to target
+        const dx = p.x - target.x, dy = p.y - target.y;
+        if(dx*dx + dy*dy < 2500 && Math.random() > 0.86){
+          ctx.beginPath();
+          ctx.arc(p.x + rand(-4,4), p.y + rand(-4,4), rand(0.8,2.6), 0, Math.PI*2);
+          ctx.fill();
+        }
+
+        if(p.age > p.life || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40){
+          particles.splice(i,1);
+        }
+      }
+
+      drawTarget();
+
+      // occasional pulse lines (visual "impact")
+      if(Math.random() > 0.995){
+        const lines = Math.floor(rand(3,8));
+        for(let i=0;i<lines;i++){
+          ctx.beginPath();
+          ctx.moveTo(target.x + rand(-8,8), target.y + rand(-8,8));
+          const a = rand(0, Math.PI*2);
+          ctx.lineTo(target.x + Math.cos(a)*rand(40,240), target.y + Math.sin(a)*rand(40,240));
+          ctx.lineWidth = rand(0.6,1.6);
+          ctx.strokeStyle = `rgba(0,255,153,${rand(0.06,0.16)})`;
+          ctx.stroke();
+        }
+      }
+
+      // slow drift of target to create motion variety
+      target.x += Math.sin(Date.now()/1300) * 0.25;
+      target.y += Math.cos(Date.now()/1700) * 0.18;
+
+      requestAnimationFrame(render);
+    }
+
+    // start animation
+    resize();
+    render();
+
+    // toggle control
+    const toggleBtn = document.getElementById('toggleAnim');
+    toggleBtn.addEventListener('click', ()=>{
+      animEnabled = !animEnabled;
+      toggleBtn.textContent = animEnabled ? 'ON' : 'OFF';
+      toggleBtn.setAttribute('aria-pressed', String(animEnabled));
+      // hide canvas when disabled (immediate)
+      canvas.style.opacity = animEnabled ? '0.14' : '0';
+    });
+
+    // small accessibility: pause animation when page isn't visible
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden){
+        animEnabled = false;
+        toggleBtn.textContent = 'OFF';
+        canvas.style.opacity = '0';
+      } else {
+        animEnabled = true;
+        toggleBtn.textContent = 'ON';
+        canvas.style.opacity = '0.14';
+      }
+    });
+
+    // -----------------------
+    // Other UX handlers (enter to submit)
+    // -----------------------
+    document.getElementById('phone').addEventListener('keydown', (e)=> {
+      if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('submitBtn').click(); }
+    });
+
+  </script>
+</body>
+  </html>
