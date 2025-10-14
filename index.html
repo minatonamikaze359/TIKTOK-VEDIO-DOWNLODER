@@ -1,592 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WhatsApp Ban Appeal Generator</title>
-  <style>
-    :root{
-      --neon: #00ff99;
-      --neon-2: #00cc77;
-      --bg: #000;
-      --card: #0f0f0f;
-      --muted: #888;
-      --maxw: 760px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(800px 400px at 10% 10%, rgba(0,255,153,0.03), transparent 10%),
-        linear-gradient(180deg,#000 0%, #030303 100%);
-      color:var(--neon);
-      font-family: "Courier New", monospace;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:28px;
-      position:relative;
-      overflow-x:hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Ban Appeal Generator</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    color: #0ff;
+    overflow-x: hidden;
+    background: radial-gradient(circle at center, #0c0c0c, #000 90%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-    /* ===== canvas animation in background ===== */
-    #ddosCanvas{
-      position:fixed;
-      left:0; top:0;
-      width:100vw; height:100vh;
-      z-index:0;
-      pointer-events:none; /* purely visual */
-      opacity:0.14;
-      mix-blend-mode:screen;
-    }
+  h1 {
+    color: #0ff;
+    text-shadow:
+      0 0 5px #0ff,
+      0 0 10px #0ff,
+      0 0 20px #0ff,
+      0 0 40px #0ff;
+    margin-top: 20px;
+  }
 
-    .wrap{
-      width:100%;
-      max-width:var(--maxw);
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:20px;
-      z-index:5; /* above canvas */
-      position:relative;
-    }
+  form {
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2);
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    backdrop-filter: blur(5px);
+  }
 
-    header{
-      grid-column:1/-1;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:6px;
-    }
-    h1{
-      margin:0;
-      font-size:1.2rem;
-      text-shadow:0 0 8px rgba(0,255,153,0.08);
-    }
-    .brand-sub{color:var(--muted); font-size:12px}
+  select, input, textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    outline: none;
+    font-size: 16px;
+    background: rgba(0,0,0,0.2);
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+  }
 
-    .card{
-      background: linear-gradient(180deg, rgba(0,255,153,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(0,255,153,0.12);
-      padding:18px;
-      border-radius:10px;
-      box-shadow: 0 6px 30px rgba(0,255,153,0.03);
-    }
+  input::placeholder, textarea::placeholder {
+    color: #0ff;
+    opacity: 0.7;
+    text-shadow: 0 0 5px #0ff;
+  }
 
-    /* form column */
-    .form-card .row{margin-top:12px}
-    label{display:block; font-weight:bold; font-size:13px}
-    input, select, textarea{
-      width:100%;
-      margin-top:8px;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid rgba(0,255,153,0.12);
-      background:#0b0b0b;
-      color:var(--neon);
-      font-family:inherit;
-      font-size:14px;
-    }
-    textarea{min-height:96px; resize:vertical}
+  button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    background: linear-gradient(90deg,#00ffff,#00ff99,#00ffff);
+    color: #0ff;
+    font-weight: 700;
+    cursor: pointer;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+    transition: 0.3s;
+  }
 
-    .btn{
-      display:inline-block;
-      width:100%;
-      padding:12px;
-      margin-top:14px;
-      border-radius:8px;
-      border:none;
-      cursor:pointer;
-      font-weight:bold;
-      font-family:inherit;
-      background:var(--neon);
-      color:#000;
-      transition:all .18s ease;
-    }
-    .btn:hover{background:var(--neon-2); transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,255,153,0.08)}
+  button:hover {
+    box-shadow: 0 0 20px #0ff, 0 0 40px #0ff, 0 0 60px #0ff;
+  }
 
-    .small{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:8px;
-    }
+  .channel-btn {
+    margin-top: 15px;
+    background: linear-gradient(90deg,#ff00cc,#3333ff,#ff00cc);
+    color:#0ff;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+    animation: glow 3s infinite alternate;
+    border-radius: 12px;
+    padding: 15px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #0ff;
+    cursor: pointer;
+  }
 
-    /* right column */
-    .right-col{display:flex; flex-direction:column; gap:12px}
-    .recent-list{max-height:220px; overflow:auto; padding:6px; border-radius:8px}
-    .recent-item{padding:8px; border-radius:6px; border:1px solid rgba(0,255,153,0.06); margin-bottom:8px; font-size:13px}
-    .pill{display:inline-block; padding:4px 8px; border-radius:999px; background:rgba(0,255,153,0.04); color:var(--neon); font-size:12px; margin-left:6px}
+  @keyframes glow {
+    from { box-shadow:0 0 10px #ff00cc, 0 0 20px #0ff; }
+    to { box-shadow:0 0 25px #3333ff, 0 0 40px #0ff; }
+  }
 
-    .tips{font-size:13px; color:var(--muted); line-height:1.45}
-    .disclaimer{font-size:12px; color:#9aa; text-align:center; margin-top:8px}
+  #channelImg {
+    margin-top: 15px;
+    max-width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 0 25px #0ff;
+  }
 
-    /* overlay while redirecting */
-    .overlay{
-      position:fixed;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6));
-      z-index:1200;
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .18s ease;
-    }
-    .overlay.show{opacity:1; pointer-events:auto}
-    .box{
-      background: #070707;
-      padding:18px 22px;
-      border-radius:10px;
-      text-align:center;
-      border:1px solid rgba(0,255,153,0.08);
-      box-shadow:0 8px 30px rgba(0,0,0,0.6);
-      color:var(--neon);
-    }
-    .loader{
-      width:40px; height:40px; margin:10px auto 6px; position:relative;
-      border-radius:50%; border:3px solid rgba(0,255,153,0.08);
-    }
-    .loader::after{
-      content:""; position:absolute; inset:4px; border-radius:50%; border:3px solid var(--neon);
-      animation:spin 1s linear infinite;
-    }
-    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-
-    /* ddos badge */
-    .ddos-badge{
-      position:fixed;
-      bottom:18px;
-      left:18px;
-      z-index:800;
-      font-size:13px;
-      background:rgba(0,0,0,0.6);
-      border:1px solid rgba(0,255,153,0.08);
-      color:var(--neon);
-      padding:8px 10px;
-      border-radius:8px;
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .toggle{
-      background:#0b0b0b; border:1px solid rgba(0,255,153,0.06); padding:6px 8px; border-radius:6px; cursor:pointer;
-      font-family:inherit; color:var(--neon); font-size:13px;
-    }
-
-    /* responsiveness */
-    @media (max-width:900px){
-      .wrap{grid-template-columns:1fr; padding-bottom:30px}
-      .right-col{order:2}
-    }
-
-  </style>
+  canvas#bgAnim {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+  }
+</style>
 </head>
 <body>
-  <!-- Decorative canvas animation (visual only) -->
-  <canvas id="ddosCanvas" aria-hidden="true"></canvas>
+<canvas id="bgAnim"></canvas>
+<h1>WhatsApp Ban Appeal Generator</h1>
 
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>WhatsApp Ban Appeal Generator</h1>
-        <div class="brand-sub">Automate a clear support request — opens your email app</div>
-      </div>
-      <div style="text-align:right">
-        <div class="brand-sub">© 2025 Hacker's Hideout</div>
-      </div>
-    </header>
+<form id="appealForm">
+  <select id="countryCode" required>
+<option value="+93">Afghanistan +93</option>
+    <option value="+355">Albania +355</option>
+    <option value="+213">Algeria +213</option>
+    <option value="+1-684">American Samoa +1-684</option>
+    <option value="+376">Andorra +376</option>
+    <option value="+244">Angola +244</option>
+    <option value="+1-264">Anguilla +1-264</option>
+    <option value="+672">Antarctica +672</option>
+    <option value="+1-268">Antigua and Barbuda +1-268</option>
+    <option value="+54">Argentina +54</option>
+    <option value="+374">Armenia +374</option>
+    <option value="+297">Aruba +297</option>
+    <option value="+61">Australia +61</option>
+    <option value="+43">Austria +43</option>
+    <option value="+994">Azerbaijan +994</option>
+    <option value="+1-242">Bahamas +1-242</option>
+    <option value="+973">Bahrain +973</option>
+    <option value="+880">Bangladesh +880</option>
+    <option value="+1-246">Barbados +1-246</option>
+    <option value="+375">Belarus +375</option>
+    <option value="+32">Belgium +32</option>
+    <option value="+501">Belize +501</option>
+    <option value="+229">Benin +229</option>
+    <option value="+1-441">Bermuda +1-441</option>
+    <option value="+975">Bhutan +975</option>
+    <option value="+591">Bolivia +591</option>
+    <option value="+387">Bosnia and Herzegovina +387</option>
+    <option value="+267">Botswana +267</option>
+    <option value="+55">Brazil +55</option>
+    <option value="+246">British Indian Ocean Territory +246</option>
+    <option value="+1-284">British Virgin Islands +1-284</option>
+    <option value="+673">Brunei +673</option>
+    <option value="+359">Bulgaria +359</option>
+    <option value="+226">Burkina Faso +226</option>
+    <option value="+257">Burundi +257</option>
+    <option value="+855">Cambodia +855</option>
+    <option value="+237">Cameroon +237</option>
+    <option value="+1">Canada +1</option>
+    <option value="+238">Cape Verde +238</option>
+    <option value="+1-345">Cayman Islands +1-345</option>
+    <option value="+236">Central African Republic +236</option>
+    <option value="+235">Chad +235</option>
+    <option value="+56">Chile +56</option>
+    <option value="+86">China +86</option>
+    <option value="+61">Christmas Island +61</option>
+    <option value="+61">Cocos Islands +61</option>
+    <option value="+57">Colombia +57</option>
+    <option value="+269">Comoros +269</option>
+    <option value="+682">Cook Islands +682</option>
+    <option value="+506">Costa Rica +506</option>
+    <option value="+385">Croatia +385</option>
+    <option value="+53">Cuba +53</option>
+    <option value="+599">Curacao +599</option>
+    <option value="+357">Cyprus +357</option>
+    <option value="+420">Czech Republic +420</option>
+    <option value="+243">Democratic Republic of the Congo +243</option>
+    <option value="+45">Denmark +45</option>
+    <option value="+253">Djibouti +253</option>
+    <option value="+1-767">Dominica +1-767</option>
+    <option value="+1-809">Dominican Republic +1-809</option>
+    <option value="+1-829">Dominican Republic +1-829</option>
+    <option value="+1-849">Dominican Republic +1-849</option>
+    <option value="+670">East Timor +670</option>
+    <option value="+593">Ecuador +593</option>
+    <option value="+20">Egypt +20</option>
+    <option value="+503">El Salvador +503</option>
+    <option value="+240">Equatorial Guinea +240</option>
+    <option value="+291">Eritrea +291</option>
+    <option value="+372">Estonia +372</option>
+    <option value="+251">Ethiopia +251</option>
+    <option value="+500">Falkland Islands +500</option>
+    <option value="+298">Faroe Islands +298</option>
+    <option value="+679">Fiji +679</option>
+    <option value="+358">Finland +358</option>
+    <option value="+33">France +33</option>
+    <option value="+689">French Polynesia +689</option>
+    <option value="+241">Gabon +241</option>
+    <option value="+220">Gambia +220</option>
+    <option value="+995">Georgia +995</option>
+    <option value="+49">Germany +49</option>
+    <option value="+233">Ghana +233</option>
+    <option value="+350">Gibraltar +350</option>
+    <option value="+30">Greece +30</option>
+    <option value="+299">Greenland +299</option>
+    <option value="+1-473">Grenada +1-473</option>
+    <option value="+1-671">Guam +1-671</option>
+    <option value="+502">Guatemala +502</option>
+    <option value="+44-1481">Guernsey +44-1481</option>
+    <option value="+224">Guinea +224</option>
+    <option value="+245">Guinea-Bissau +245</option>
+    <option value="+592">Guyana +592</option>
+    <option value="+509">Haiti +509</option>
+    <option value="+504">Honduras +504</option>
+    <option value="+852">Hong Kong +852</option>
+    <option value="+36">Hungary +36</option>
+    <option value="+354">Iceland +354</option>
+    <option value="+91">India +91</option>
+    <option value="+62">Indonesia +62</option>
+    <option value="+98">Iran +98</option>
+    <option value="+964">Iraq +964</option>
+    <option value="+353">Ireland +353</option>
+    <option value="+44-1624">Isle of Man +44-1624</option>
+    <option value="+972">Israel +972</option>
+    <option value="+39">Italy +39</option>
+    <option value="+225">Ivory Coast +225</option>
+    <option value="+1-876">Jamaica +1-876</option>
+    <option value="+81">Japan +81</option>
+    <option value="+44-1534">Jersey +44-1534</option>
+    <option value="+962">Jordan +962</option>
+    <option value="+7">Kazakhstan +7</option>
+    <option value="+254">Kenya +254</option>
+    <option value="+686">Kiribati +686</option>
+    <option value="+383">Kosovo +383</option>
+    <option value="+965">Kuwait +965</option>
+    <option value="+996">Kyrgyzstan +996</option>
+    <option value="+856">Laos +856</option>
+    <option value="+371">Latvia +371</option>
+    <option value="+961">Lebanon +961</option>
+    <option value="+266">Lesotho +266</option>
+    <option value="+231">Liberia +231</option>
+    <option value="+218">Libya +218</option>
+    <option value="+423">Liechtenstein +423</option>
+    <option value="+370">Lithuania +370</option>
+    <option value="+352">Luxembourg +352</option>
+    <option value="+853">Macau +853</option>
+    <option value="+389">Macedonia +389</option>
+    <option value="+261">Madagascar +261</option>
+    <option value="+265">Malawi +265</option>
+    <option value="+60">Malaysia +60</option>
+    <option value="+960">Maldives +960</option>
+    <option value="+223">Mali +223</option>
+    <option value="+356">Malta +356</option>
+    <option value="+692">Marshall Islands +692</option>
+    <option value="+222">Mauritania +222</option>
+    <option value="+230">Mauritius +230</option>
+    <option value="+262">Mayotte +262</option>
+    <option value="+52">Mexico +52</option>
+    <option value="+691">Micronesia +691</option>
+    <option value="+373">Moldova +373</option>
+    <option value="+377">Monaco +377</option>
+    <option value="+976">Mongolia +976</option>
+    <option value="+382">Montenegro +382</option>
+    <option value="+1-664">Montserrat +1-664</option>
+    <option value="+212">Morocco +212</option>
+    <option value="+258">Mozambique +258</option>
+    <option value="+95">Myanmar +95</option>
+    <option value="+264">Namibia +264</option>
+    <option value="+674">Nauru +674</option>
+    <option value="+977">Nepal +977</option>
+    <option value="+31">Netherlands +31</option>
+    <option value="+599">Netherlands Antilles +599</option>
+    <option value="+687">New Caledonia +687</option>
+    <option value="+64">New Zealand +64</option>
+    <option value="+505">Nicaragua +505</option>
+    <option value="+227">Niger +227</option>
+    <option value="+234">Nigeria +234</option>
+    <option value="+683">Niue +683</option>
+    <option value="+850">North Korea +850</option>
+    <option value="+1-670">Northern Mariana Islands +1-670</option>
+    <option value="+47">Norway +47</option>
+    <option value="+968">Oman +968</option>
+    <option value="+92">Pakistan +92</option>
+    <option value="+680">Palau +680</option>
+    <option value="+970">Palestine +970</option>
+    <option value="+507">Panama +507</option>
+    <option value="+675">Papua New Guinea +675</option>
+    <option value="+595">Paraguay +595</option>
+    <option value="+51">Peru +51</option>
+    <option value="+63">Philippines +63</option>
+    <option value="+64">Pitcairn +64</option>
+    <option value="+48">Poland +48</option>
+    <option value="+351">Portugal +351</option>
+    <option value="+1-787">Puerto Rico +1-787</option>
+    <option value="+1-939">Puerto Rico +1-939</option>
+    <option value="+974">Qatar +974</option>
+    <option value="+242">Republic of the Congo +242</option>
+    <option value="+262">Reunion +262</option>
+    <option value="+40">Romania +40</option>
+    <option value="+7">Russia +7</option>
+    <option value="+250">Rwanda +250</option>
+    <option value="+590">Saint Barthelemy +590</option>
+    <option value="+290">Saint Helena +290</option>
+    <option value="+1-869">Saint Kitts and Nevis +1-869</option>
+    <option value="+1-758">Saint Lucia +1-758</option>
+    <option value="+590">Saint Martin +590</option>
+    <option value="+508">Saint Pierre and Miquelon +508</option>
+    <option value="+1-784">Saint Vincent and the Grenadines +1-784</option>
+    <option value="+685">Samoa +685</option>
+    <option value="+378">San Marino +378</option>
+    <option value="+239">Sao Tome and Principe +239</option>
+    <option value="+966">Saudi Arabia +966</option>
+    <option value="+221">Senegal +221</option>
+    <option value="+381">Serbia +381</option>
+    <option value="+248">Seychelles +248</option>
+    <option value="+232">Sierra Leone +232</option>
+    <option value="+65">Singapore +65</option>
+    <option value="+1-721">Sint Maarten +1-721</option>
+    <option value="+421">Slovakia +421</option>
+    <option value="+386">Slovenia +386</option>
+    <option value="+677">Solomon Islands +677</option>
+    <option value="+252">Somalia +252</option>
+    <option value="+27">South Africa +27</option>
+    <option value="+82">South Korea +82</option>
+    <option value="+211">South Sudan +211</option>
+    <option value="+34">Spain +34</option>
+    <option value="+94">Sri Lanka +94</option>
+    <option value="+249">Sudan +249</option>
+    <option value="+597">Suriname +597</option>
+    <option value="+47">Svalbard and Jan Mayen +47</option>
+    <option value="+268">Swaziland +268</option>
+    <option value="+46">Sweden +46</option>
+    <option value="+41">Switzerland +41</option>
+    <option value="+963">Syria +963</option>
+    <option value="+886">Taiwan +886</option>
+    <option value="+992">Tajikistan +992</option>
+    <option value="+255">Tanzania +255</option>
+    <option value="+66">Thailand +66</option>
+    <option value="+228">Togo +228</option>
+    <option value="+690">Tokelau +690</option>
+    <option value="+676">Tonga +676</option>
+    <option value="+1-868">Trinidad and Tobago +1-868</option>
+    <option value="+216">Tunisia +216</option>
+    <option value="+90">Turkey +90</option>
+    <option value="+993">Turkmenistan +993</option>
+    <option value="+1-649">Turks and Caicos Islands +1-649</option>
+    <option value="+688">Tuvalu +688</option>
+    <option value="+1-340">U.S. Virgin Islands +1-340</option>
+    <option value="+256">Uganda +256</option>
+    <option value="+380">Ukraine +380</option>
+    <option value="+971">United Arab Emirates +971</option>
+    <option value="+44">United Kingdom +44</option>
+    <option value="+1">United States +1</option>
+    <option value="+598">Uruguay +598</option>
+    <option value="+998">Uzbekistan +998</option>
+    <option value="+678">Vanuatu +678</option>
+    <option value="+379">Vatican +379</option>
+    <option value="+58">Venezuela +58</option>
+    <option value="+84">Vietnam +84</option>
+    <option value="+681">Wallis and Futuna +681</option>
+    <option value="+212">Western Sahara +212</option>
+    <option value="+967">Yemen +967</option>
+    <option value="+260">Zambia +260</option>
+    <option value="+263">Zimbabwe +263</option>
+  </select>
 
-    <!-- left: form -->
-    <section class="card form-card">
-      <div style="display:flex; gap:10px; align-items:center">
-        <strong style="font-size:14px">Create Appeal</strong>
-        <span class="pill" id="status-pill">Ready</span>
-      </div>
+  <input type="tel" id="phone" placeholder="Enter your banned number (without code)" required>
+  <textarea id="reason" placeholder="Reason for Ban Appeal" rows="4" required></textarea>
+  <input type="email" id="email" placeholder="Your Email Address" required>
+  <button type="submit">Submit Appeal</button>
+</form>
 
-      <div class="row">
-        <label for="email">Sender Email (your email)</label>
-        <input id="email" type="email" placeholder="you@gmail.com (used in message body)" required>
-      </div>
+<button class="channel-btn" id="channelBtn">Follow Our Channel 💎</button>
 
-      <div class="row">
-        <label for="country">Country Code</label>
-        <select id="country">
-          <option value="+880" selected>Bangladesh (+880)</option>
-          <option value="+91">India (+91)</option>
-          <option value="+1">United States (+1)</option>
-          <option value="+44">United Kingdom (+44)</option>
-          <option value="+61">Australia (+61)</option>
-          <option value="+92">Pakistan (+92)</option>
-          <option value="+94">Sri Lanka (+94)</option>
-          <option value="+977">Nepal (+977)</option>
-          <option value="+65">Singapore (+65)</option>
-          <option value="+81">Japan (+81)</option>
-          <option value="+49">Germany (+49)</option>
-          <option value="+33">France (+33)</option>
-          <option value="+54">Argentina (+54)</option>
-          <option value="+971">United Arab Emirates (+971)</option>
-          <option value="+93">Afghanistan (+93)</option>
-        </select>
-      </div>
+<!-- Image after button -->
+<img id="channelImg" src="https://i.ibb.co/gMVMgGcq.png" alt="Channel Banner">
 
-      <div class="row">
-        <label for="phone">Phone Number (without leading zero)</label>
-        <input id="phone" type="text" placeholder="1712345678 (no leading 0)">
-      </div>
+<script>
+const form = document.getElementById('appealForm');
+const channelBtn = document.getElementById('channelBtn');
 
-      <div class="row">
-        <label for="issue">Issue Type</label>
-        <select id="issue">
-          <option value="appeal">Appeal / Account Ban</option>
-          <option value="registration">Registration Issue</option>
-          <option value="2fa">2FA / Verification</option>
-          <option value="hacked">Account Hacked</option>
-          <option value="lost">Lost/Stolen</option>
-        </select>
-      </div>
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const country = document.getElementById('countryCode').value;
+  const phone = document.getElementById('phone').value;
+  const reason = document.getElementById('reason').value;
 
-      <div class="row">
-        <label for="reason">Reason for Ban (brief)</label>
-        <textarea id="reason" placeholder="Explain briefly why you think the ban was a mistake."></textarea>
-      </div>
+  const subject = encodeURIComponent("Request to Review My WhatsApp Account Ban");
+  const body = encodeURIComponent(`Dear WhatsApp Support Team,
 
-      <button class="btn" id="submitBtn">Submit Request & Open Email</button>
+I hope this email finds you well. I am writing to urgently request a review of the ban on my WhatsApp number ${country}${phone}.
 
-      <div class="small">
-        <strong>Note:</strong> This tool prepares and opens a pre-filled email to WhatsApp support (support@support.whatsapp.com). Final decision is made by WhatsApp.
-      </div>
-    </section>
+Reason/Context:
+${reason}
 
-    <!-- right: recent / tips -->
-    <aside class="right-col">
-      <div class="card">
-        <strong>Recent Submissions</strong>
-        <div class="recent-list" id="recentList" style="margin-top:10px">
-          <!-- populated by JS -->
-        </div>
-        <div class="small" style="margin-top:8px">Saved locally in your browser. Not shared with anyone.</div>
-      </div>
+I have carefully reviewed WhatsApp's terms of service and community guidelines, and I can assure you that I have not violated any of the stated policies. I rely on WhatsApp for personal and professional communication, and the ban has caused significant disruption to my daily activities.
 
-      <div class="card tips">
-        <strong>Tips to improve the chance</strong>
-        <ul style="padding-left:18px; margin:10px 0 0 0">
-          <li>Use the same email and number linked to your account.</li>
-          <li>Choose the correct issue type (e.g. "hacked" if hacked).</li>
-          <li>Keep the message short and factual — avoid emotional language.</li>
-          <li>Wait 48–72 hours before resubmitting if not responded.</li>
-        </ul>
-      </div>
+I kindly request your immediate attention and assistance in lifting the ban on my WhatsApp number. I understand the importance of maintaining a safe and secure platform for all users, and I am committed to adhering to WhatsApp's policies moving forward.
 
-      <div class="card" style="text-align:center; font-size:13px; color:var(--muted)">
-        This website is not affiliated with WhatsApp or Meta. It automates preparing the email only.
-      </div>
-    </aside>
-  </div>
+If there is any additional information or steps required from my end to resolve this issue, please let me know. I am more than willing to cooperate and provide any necessary details to prove that my account should be unbanned.
 
-  <!-- overlay while redirecting -->
-  <div id="overlay" class="overlay" aria-hidden="true">
-    <div class="box">
-      <div class="loader" aria-hidden="true"></div>
-      <div id="overlayText">Redirecting to email app…</div>
-      <div class="small" style="margin-top:6px">If nothing opens, copy the prepared message and email <code>support@support.whatsapp.com</code> manually.</div>
-    </div>
-  </div>
+I appreciate your prompt attention to this matter and look forward to a swift resolution. Thank you for your understanding and assistance.
 
-  <!-- ddos animation toggle badge -->
-  <div class="ddos-badge" role="region" aria-label="DDoS animation control">
-    <div style="font-weight:700">DDOS VISUAL</div>
-    <button id="toggleAnim" class="toggle" aria-pressed="true">ON</button>
-  </div>
+WhatsApp Number: ${country}${phone}
+Contact Email: ${email}
 
-  <script>
-    // -----------------------
-    // Recent submissions (localStorage)
-    // -----------------------
-    const recentKey = 'wa_appeal_recent_v1';
-    const maxRecent = 12;
+Thank you,
+${email}`);
 
-    function fmtDate(d){
-      const dt = new Date(d);
-      return dt.toLocaleString();
-    }
+  window.location.href = `mailto:support@whatsapp.com?subject=${subject}&body=${body}`;
+});
 
-    function loadRecent(){
-      try{
-        const raw = localStorage.getItem(recentKey);
-        return raw ? JSON.parse(raw) : [];
-      }catch(e){ return [] }
-    }
-    function saveRecent(arr){
-      localStorage.setItem(recentKey, JSON.stringify(arr.slice(0, maxRecent)));
-    }
+channelBtn.addEventListener('click', () => {
+  window.open("https://whatsapp.com/channel/0029VaZb8IQ9mrGc8tGETf2i", "_blank");
+});
 
-    function renderRecent(){
-      const list = document.getElementById('recentList');
-      list.innerHTML = '';
-      const arr = loadRecent();
-      if(!arr.length){
-        list.innerHTML = '<div class="small" style="color:var(--muted)">No recent submissions yet.</div>';
-        return;
-      }
-      arr.forEach(r=>{
-        const div = document.createElement('div');
-        div.className = 'recent-item';
-        div.innerHTML = `<strong>${r.country}${r.phone}</strong> — ${r.issue} <div class="small" style="margin-top:6px">${r.email} • ${fmtDate(r.time)}</div>`;
-        list.appendChild(div);
-      });
-    }
+// Background particle animation
+const canvas = document.getElementById('bgAnim');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-    // prepare mailto content
-    function prepareMessage({nameEmail, country, phone, issue, reason}){
-      const subject = encodeURIComponent('Request to Restore My WhatsApp Account');
-      const bodyLines = [
-        `Dear WhatsApp Support Team,`,
-        ``,
-        `My phone number: ${country}${phone}`,
-        `Issue type: ${issue}`,
-        ``,
-        `Description: ${reason || 'N/A'}`,
-        ``,
-        `Please contact me at: ${nameEmail}`,
-        ``,
-        `Thank you,`,
-        `— ${nameEmail}`
-      ];
-      const body = encodeURIComponent(bodyLines.join('\n'));
-      return {subject, body};
-    }
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-    // overlay
-    function showOverlay(show=true){
-      const ov = document.getElementById('overlay');
-      if(show){ ov.classList.add('show'); ov.setAttribute('aria-hidden','false') }
-      else { ov.classList.remove('show'); ov.setAttribute('aria-hidden','true') }
-    }
+for (let i = 0; i < 150; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 1,
+    dx: (Math.random() - 0.5) * 0.5,
+    dy: (Math.random() - 0.5) * 0.5
+  });
+}
 
-    // submit handler
-    document.getElementById('submitBtn').addEventListener('click',()=>{
-      const email = document.getElementById('email').value.trim();
-      const country = document.getElementById('country').value;
-      const phone = document.getElementById('phone').value.trim();
-      const issueSelect = document.getElementById('issue');
-      const issue = issueSelect.options[issueSelect.selectedIndex].text;
-      const reason = document.getElementById('reason').value.trim();
-
-      if(!email || !phone){
-        alert('Please fill your email and phone number.');
-        return;
-      }
-
-      // store recent locally
-      const rec = loadRecent();
-      rec.unshift({email, country, phone, issue:issue.toLowerCase(), reason, time: Date.now()});
-      saveRecent(rec);
-      renderRecent();
-
-      // prepare mailto
-      const {subject, body} = prepareMessage({
-        nameEmail: email,
-        country,
-        phone,
-        issue,
-        reason
-      });
-
-      // overlay then redirect
-      showOverlay(true);
-      setTimeout(()=>{
-        const to = 'support@support.whatsapp.com';
-        const mailto = `mailto:${encodeURIComponent(to)}?subject=${subject}&body=${body}`;
-        window.location.href = mailto;
-        setTimeout(()=> showOverlay(false), 2500);
-      }, 700);
-    });
-
-    // init recent list
-    renderRecent();
-
-    // -----------------------
-    // DDoS-style canvas animation (visual only)
-    // - Particles emit from left/right towards a pulsing target
-    // - No network activity, purely decorative
-    // -----------------------
-    const canvas = document.getElementById('ddosCanvas');
-    const ctx = canvas.getContext('2d');
-    let W = canvas.width = window.innerWidth;
-    let H = canvas.height = window.innerHeight;
-    let particles = [];
-    const maxParticles = 220; // visual density
-    let animEnabled = true;
-
-    function rand(min,max){ return Math.random()*(max-min)+min; }
-
-    function resize(){
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-
-    // target sits near center-right
-    const target = { x: W * 0.72, y: H * 0.45, baseR: 26, pulse:0 };
-
-    function spawnPacket(side){
-      // side: 'left' | 'right' | 'top' | 'random'
-      const edge = side || (Math.random() < 0.5 ? 'left' : 'right');
-      let x = edge === 'left' ? -10 : (edge === 'right' ? W+10 : rand(0,W));
-      let y = edge === 'top' ? -10 : rand(H*0.05, H*0.95);
-      const speed = rand(1.2, 5.2);
-      const angle = Math.atan2(target.y - y, target.x - x);
-      const vx = Math.cos(angle) * speed + rand(-0.3,0.3);
-      const vy = Math.sin(angle) * speed + rand(-0.3,0.3);
-      const life = rand(80, 240);
-      const size = rand(1,3.6);
-      const opacity = rand(0.14, 0.38);
-      particles.push({x,y,vx,vy,life,age:0,size,opacity});
-      if(particles.length > maxParticles) particles.shift();
-    }
-
-    function drawTarget(){
-      // pulsing target circle
-      target.pulse += 0.06;
-      const r = target.baseR + Math.sin(target.pulse) * 6;
-      // outer halo
-      const g = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, r*4);
-      g.addColorStop(0, 'rgba(0,255,153,0.08)');
-      g.addColorStop(1, 'rgba(0,255,153,0)');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(target.x, target.y, r*4, 0, Math.PI*2);
-      ctx.fill();
-
-      // central ring
-      ctx.strokeStyle = 'rgba(0,255,153,0.28)';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(target.x, target.y, r, 0, Math.PI*2);
-      ctx.stroke();
-
-      // small center dot
-      ctx.fillStyle = 'rgba(0,255,153,0.95)';
-      ctx.beginPath();
-      ctx.arc(target.x, target.y, 3.2, 0, Math.PI*2);
-      ctx.fill();
-    }
-
-    function render(){
-      if(!animEnabled){
-        ctx.clearRect(0,0,W,H);
-        return;
-      }
-
-      // subtle background noise lines (static grid effect)
-      ctx.clearRect(0,0,W,H);
-      ctx.globalCompositeOperation = 'lighter';
-
-      // spawn a few packets per frame (density)
-      const spawnCount = Math.floor(rand(1,4));
-      for(let i=0;i<spawnCount;i++){
-        const sideChance = Math.random();
-        if(sideChance < 0.54) spawnPacket('left');
-        else if(sideChance < 0.92) spawnPacket('right');
-        else spawnPacket('top');
-      }
-
-      // draw particles
-      for(let i = particles.length-1; i >= 0; i--){
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.age++;
-        // fade as age increases
-        const lifeRatio = 1 - p.age / p.life;
-        const alpha = p.opacity * Math.max(lifeRatio, 0);
-
-        // glow trail
-        ctx.beginPath();
-        ctx.moveTo(p.x - p.vx*1.6, p.y - p.vy*1.6);
-        ctx.lineTo(p.x, p.y);
-        ctx.lineWidth = Math.max(p.size*0.8, 0.8);
-        ctx.strokeStyle = `rgba(0,255,153,${alpha*0.9})`;
-        ctx.stroke();
-
-        // head
-        ctx.fillStyle = `rgba(0,255,153,${alpha})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fill();
-
-        // small spark when close to target
-        const dx = p.x - target.x, dy = p.y - target.y;
-        if(dx*dx + dy*dy < 2500 && Math.random() > 0.86){
-          ctx.beginPath();
-          ctx.arc(p.x + rand(-4,4), p.y + rand(-4,4), rand(0.8,2.6), 0, Math.PI*2);
-          ctx.fill();
-        }
-
-        if(p.age > p.life || p.x < -40 || p.x > W + 40 || p.y < -40 || p.y > H + 40){
-          particles.splice(i,1);
-        }
-      }
-
-      drawTarget();
-
-      // occasional pulse lines (visual "impact")
-      if(Math.random() > 0.995){
-        const lines = Math.floor(rand(3,8));
-        for(let i=0;i<lines;i++){
-          ctx.beginPath();
-          ctx.moveTo(target.x + rand(-8,8), target.y + rand(-8,8));
-          const a = rand(0, Math.PI*2);
-          ctx.lineTo(target.x + Math.cos(a)*rand(40,240), target.y + Math.sin(a)*rand(40,240));
-          ctx.lineWidth = rand(0.6,1.6);
-          ctx.strokeStyle = `rgba(0,255,153,${rand(0.06,0.16)})`;
-          ctx.stroke();
-        }
-      }
-
-      // slow drift of target to create motion variety
-      target.x += Math.sin(Date.now()/1300) * 0.25;
-      target.y += Math.cos(Date.now()/1700) * 0.18;
-
-      requestAnimationFrame(render);
-    }
-
-    // start animation
-    resize();
-    render();
-
-    // toggle control
-    const toggleBtn = document.getElementById('toggleAnim');
-    toggleBtn.addEventListener('click', ()=>{
-      animEnabled = !animEnabled;
-      toggleBtn.textContent = animEnabled ? 'ON' : 'OFF';
-      toggleBtn.setAttribute('aria-pressed', String(animEnabled));
-      // hide canvas when disabled (immediate)
-      canvas.style.opacity = animEnabled ? '0.14' : '0';
-    });
-
-    // small accessibility: pause animation when page isn't visible
-    document.addEventListener('visibilitychange', ()=>{
-      if(document.hidden){
-        animEnabled = false;
-        toggleBtn.textContent = 'OFF';
-        canvas.style.opacity = '0';
-      } else {
-        animEnabled = true;
-        toggleBtn.textContent = 'ON';
-        canvas.style.opacity = '0.14';
-      }
-    });
-
-    // -----------------------
-    // Other UX handlers (enter to submit)
-    // -----------------------
-    document.getElementById('phone').addEventListener('keydown', (e)=> {
-      if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('submitBtn').click(); }
-    });
-
-  </script>
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#0ff";
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+    p.x += p.dx;
+    p.y += p.dy;
+    if(p.x<0||p.x>canvas.width) p.dx*=-1;
+    if(p.y<0||p.y>canvas.height) p.dy*=-1;
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
 </body>
-  </html>
+      </html>
