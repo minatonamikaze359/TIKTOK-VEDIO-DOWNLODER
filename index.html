@@ -1,302 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok Downloader | Full Info</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-      background: url('../BdhxDXFhVMou.moe/gwLQwJha8kKE.png') no-repeat center center/cover;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container, .follow-screen {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      padding: 30px;
-      width: 400px;
-      color: white;
-      overflow-y: auto;
-      max-height: 90vh;
-    }
-
-    h1 {
-      font-size: 22px;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      outline: none;
-      font-size: 14px;
-      text-align: center;
-    }
-
-    .fetch-btn {
-      width: 100%;
-      background: #ff0050;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 0;
-      font-size: 15px;
-      cursor: pointer;
-      margin-bottom: 15px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .fetch-btn:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
-    }
-
-    .links button {
-      background: #25D366;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 15px;
-      font-size: 14px;
-      cursor: pointer;
-      margin: 5px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-
-    .links button:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
-    }
-
-    .result {
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    video, audio, img {
-      width: 100%;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
-    p {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 10px;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 14px;
-    }
-
-    a.download {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      background: #0b74de;
-      color: #fff;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all .3s ease;
-      font-size: 13px;
-    }
-
-    a.download:hover {
-      background: #095fc2;
-      transform: scale(1.05);
-    }
-
-    .loading {
-      display: none;
-      font-size: 14px;
-      margin-top: 10px;
-      color: #ffb6c1;
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      50% { opacity: 0.5; }
-    }
-
-    .profile {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .profile img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-    }
-
-    .stats {
-      margin-top: 10px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 13px;
-      color: #ddd;
-      line-height: 1.5;
-    }
-
-    footer {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #fff;
-      opacity: 0.8;
-    }
-
-    /* Follow Screen */
-    .follow-screen h2 {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-
-    .follow-btn {
-      background: #25D366;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      padding: 12px 20px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .follow-btn:hover {
-      background: #1ebe5d;
-      transform: scale(1.05);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universal Video Downloader | Sasuke Uchia</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: url('https://i.ibb.co/7Q2m3Cz/bg.jpg') no-repeat center center/cover;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.container, .follow-screen {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  text-align: center;
+  padding: 30px;
+  width: 400px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+h1,h2,h3 { margin-bottom: 15px; }
+input, select {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  outline: none;
+  font-size: 14px;
+  text-align: center;
+}
+.fetch-btn {
+  width: 100%;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.fetch-btn.youtube { background: #FF0000; }
+.fetch-btn.tiktok { background: #FF0050; }
+.fetch-btn.instagram { background: #E1306C; }
+.fetch-btn:hover { opacity:0.9; transform: scale(1.05);}
+.links button {background:#25D366;color:white;border:none;border-radius:8px;padding:10px 15px;margin:5px;cursor:pointer;font-weight:600;transition:.3s;}
+.links button:hover{opacity:.9; transform: scale(1.05);}
+.result {margin-top:20px;text-align:center;}
+video,img,audio {width:100%;border-radius:10px;margin-top:10px;}
+p {background: rgba(0,0,0,0.3);padding:10px;border-radius:8px;font-size:14px;}
+a.download{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:8px;background:#0b74de;color:#fff;font-weight:600;text-decoration:none;transition:all .3s ease;font-size:13px;}
+a.download:hover{background:#095fc2;transform:scale(1.05);}
+.loading {display:none;font-size:14px;margin-top:10px;color:#ffb6c1;animation:blink 1s infinite;}
+@keyframes blink{50%{opacity:0.5;}}
+footer{margin-top:15px;font-size:12px;color:#fff;opacity:0.8;}
+.follow-screen h2{font-size:20px;margin-bottom:15px;}
+.follow-btn{background:#25D366;border:none;border-radius:10px;color:#fff;padding:12px 20px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s;}
+.follow-btn:hover{background:#1ebe5d;transform:scale(1.05);}
+nav{margin-bottom:15px;display:flex;justify-content:center;gap:10px;}
+nav a{color:#0b74de;font-weight:600;text-decoration:none;padding:6px 12px;border-radius:6px;background:rgba(255,255,255,0.1);transition:0.3s;}
+nav a:hover{background:rgba(255,255,255,0.2);}
+</style>
 </head>
 <body>
-  <!-- Follow screen first -->
-  <div class="follow-screen" id="followScreen">
-    <h2>📣 Follow Our WhatsApp Channel To Use This Tool</h2>
-    <p style="font-size:14px;color:#eee;">Stay updated with the latest tools and news!</p>
-    <button class="follow-btn" onclick="followChannel()">💚 Follow Channel</button>
+
+<!-- Follow overlay -->
+<div class="follow-screen" id="followScreen">
+  <h2>📣 Follow Our WhatsApp Channel To Use This Tool</h2>
+  <p style="font-size:14px;color:#eee;">Stay updated with the latest tools and news!</p>
+  <button class="follow-btn" onclick="followChannel()">💚 Follow Channel</button>
+</div>
+
+<!-- Main container -->
+<div class="container" id="mainContainer" style="display:none;">
+  <h1>Universal Video Downloader</h1>
+
+  <select id="platform" onchange="updateButtonColor()">
+    <option value="youtube">YouTube</option>
+    <option value="tiktok">TikTok</option>
+    <option value="instagram">Instagram</option>
+  </select>
+
+  <input type="text" id="videoURL" placeholder="Paste video link here...">
+  <button class="fetch-btn youtube" id="fetchBtn" onclick="fetchData()">🚀 Fetch Video</button>
+
+  <div class="links">
+    <button onclick="window.open('https://whatsapp.com/channel/0029VaZb8IQ9mrGc8tGETf2i')">💚 Join WhatsApp Channel</button>
   </div>
 
-  <!-- TikTok Downloader main container -->
-  <div class="container" id="mainContainer" style="display:none;">
-    <h1>🎵 TikTok Downloader</h1>
-    <input type="text" id="videoURL" placeholder="Paste TikTok link here...">
-    <button class="fetch-btn" onclick="fetchTikTokData()">🚀 Fetch Data</button>
+  <div class="loading" id="loading">⏳ Fetching data...</div>
+  <div class="result" id="result"></div>
 
-    <div class="links">
-      <button onclick="window.open('https://whatsapp.com/channel/0029VaZb8IQ9mrGc8tGETf2i')">💚 Join WhatsApp Channel</button>
-    </div>
+  <footer>Developed By — SASUKE UCHIA</footer>
+</div>
 
-    <div class="loading" id="loading">⏳ Fetching TikTok data bby...</div>
-    <div class="result" id="result"></div>
+<script>
+const result=document.getElementById("result");
+const loading=document.getElementById("loading");
+const platformSelect=document.getElementById("platform");
+const fetchBtn=document.getElementById("fetchBtn");
 
-    <footer>Developed By — SASUKE UCHIA</footer>
-  </div>
+function followChannel(){
+  window.open("https://whatsapp.com/channel/0029VaZb8IQ9mrGc8tGETf2i","_blank");
+  document.getElementById("followScreen").style.display="none";
+  document.getElementById("mainContainer").style.display="block";
+}
 
-  <script>
-    const videoInput = document.getElementById("videoURL");
-    const result = document.getElementById("result");
-    const loading = document.getElementById("loading");
+function updateButtonColor(){
+  const val=platformSelect.value;
+  fetchBtn.className='fetch-btn '+val;
+}
 
-    function followChannel() {
-      window.open("https://whatsapp.com/channel/0029VaZb8IQ9mrGc8tGETf2i", "_blank");
-      document.getElementById("followScreen").style.display = "none";
-      document.getElementById("mainContainer").style.display = "block";
+async function fetchData(){
+  const url=document.getElementById("videoURL").value.trim();
+  if(!url){alert("Paste link first!"); return;}
+  const platform=platformSelect.value;
+  result.innerHTML=""; loading.style.display="block";
+
+  try{
+    if(platform==="youtube"){
+      const apiURL=`https://ytstream-download-api.vercel.app/api/button/mp4?url=${encodeURIComponent(url)}`;
+      const res=await fetch(apiURL); const data=await res.json();
+      loading.style.display="none";
+      if(!data?.links?.length){result.innerHTML="<p>⚠️ Unable to fetch YouTube video.</p>"; return;}
+      const videoLink=data.links.find(l=>l.itag===22)?.url||data.links[0].url;
+      const thumb=data.thumbnail||""; const title=data.title||"No title";
+      result.innerHTML=`<h3>🎬 Video</h3><video controls src="${videoLink}"></video>
+        <a class="download" href="${videoLink}" download="youtube_video_${Date.now()}.mp4">⬇️ Download Video</a>
+        ${thumb?`<h3>🖼️ Thumbnail</h3><img src="${thumb}"><a class="download" href="${thumb}" download="youtube_thumb_${Date.now()}.jpg">⬇️ Download Image</a>`:""}
+        <h3>📝 Title</h3><p>${title}</p>
+        <a class="download" href="data:text/plain;charset=utf-8,${encodeURIComponent(title)}" download="youtube_title.txt">⬇️ Download Title</a>`;
+    } else if(platform==="tiktok"){
+      const apiURL=`https://tikwm.com/api/?url=${encodeURIComponent(url)}`;
+      const res=await fetch(apiURL); const data=await res.json();
+      loading.style.display="none";
+      if(!data?.data){result.innerHTML="<p>⚠️ Unable to fetch TikTok video.</p>"; return;}
+      const d=data.data, video=d.play, music=d.music, desc=d.title||"No description", cover=d.cover;
+      result.innerHTML=`<h3>🎬 Video</h3><video controls src="${video}"></video>
+        <a class="download" href="${video}" download="tiktok_video_${Date.now()}.mp4">⬇️ Download Video</a>
+        <h3>🎧 Audio</h3><audio controls src="${music}"></audio>
+        <a class="download" href="${music}" download="tiktok_audio_${Date.now()}.mp3">⬇️ Download Audio</a>
+        <h3>🖼️ Cover</h3><img src="${cover}"><a class="download" href="${cover}" download="tiktok_cover_${Date.now()}.jpg">⬇️ Download Image</a>
+        <h3>📝 Description</h3><p>${desc}</p>
+        <a class="download" href="data:text/plain;charset=utf-8,${encodeURIComponent(desc)}" download="tiktok_description.txt">⬇️ Download Description</a>`;
+    } else if(platform==="instagram"){
+      const apiURL=`https://vihangayt.me/download/instagram?url=${encodeURIComponent(url)}`;
+      const res=await fetch(apiURL); const data=await res.json();
+      loading.style.display="none";
+      if(!data?.data){result.innerHTML="<p>⚠️ Unable to fetch Instagram video.</p>"; return;}
+      const vid=data.data.url||data.data.data?.[0]?.url, thumb=data.data.thumbnail||"", desc=data.data.caption||"No caption available";
+      result.innerHTML=`<h3>🎬 Video</h3><video controls src="${vid}"></video>
+        <a class="download" href="${vid}" download="instagram_video_${Date.now()}.mp4">⬇️ Download Video</a>
+        ${thumb?`<h3>🖼️ Thumbnail</h3><img src="${thumb}"><a class="download" href="${thumb}" download="instagram_thumb_${Date.now()}.jpg">⬇️ Download Image</a>`:""}
+        <h3>📝 Caption</h3><p>${desc}</p>
+        <a class="download" href="data:text/plain;charset=utf-8,${encodeURIComponent(desc)}" download="instagram_caption.txt">⬇️ Download Caption</a>`;
     }
-
-    function fetchTikTokData() {
-      const url = videoInput.value.trim();
-      if (!url) {
-        alert("Please paste a TikTok link first!");
-        return;
-      }
-
-      result.innerHTML = "";
-      loading.style.display = "block";
-
-      const apiURL = `https://tikwm.com/api/?url=${encodeURIComponent(url)}`;
-
-      fetch(apiURL)
-        .then(res => res.json())
-        .then(data => {
-          loading.style.display = "none";
-
-          if (!data || !data.data) {
-            result.innerHTML = "<p>⚠️ Unable to fetch TikTok data. Try another link.</p>";
-            return;
-          }
-
-          const d = data.data;
-          const video = d.play;
-          const music = d.music;
-          const desc = d.title || "No description available";
-          const cover = d.cover;
-          const authorName = d.author?.nickname || "Unknown";
-          const username = d.author?.unique_id ? `@${d.author.unique_id}` : "";
-          const authorDP = d.author?.avatar || "";
-          const likes = d.digg_count || 0;
-          const comments = d.comment_count || 0;
-          const shares = d.share_count || 0;
-          const views = d.play_count || 0;
-
-          result.innerHTML = `
-            <div class="profile">
-              ${authorDP ? `<img src="${authorDP}" alt="Profile">` : ""}
-              <div>
-                <strong>${authorName}</strong><br><small>${username}</small>
-              </div>
-            </div>
-
-            <div class="stats">
-              ❤️ Likes: ${likes}<br>
-              💬 Comments: ${comments}<br>
-              🔁 Shares: ${shares}<br>
-              👁️ Views: ${views}
-            </div>
-
-            <h3>🎬 Video</h3>
-            <video controls src="${video}"></video>
-            <a class="download" href="${video}" download="tiktok_video_${Date.now()}.mp4">⬇️ Download Video</a>
-
-            <h3>🎧 Audio</h3>
-            <audio controls src="${music}"></audio>
-            <a class="download" href="${music}" download="tiktok_audio_${Date.now()}.mp3">⬇️ Download Audio</a>
-
-            <h3>🖼️ Cover Photo</h3>
-            <img src="${cover}" alt="Thumbnail">
-            <a class="download" href="${cover}" download="tiktok_image_${Date.now()}.jpg">⬇️ Download Image</a>
-
-            <h3>📝 Description</h3>
-            <p>${desc}</p>
-            <a class="download" href="data:text/plain;charset=utf-8,${encodeURIComponent(desc)}" download="tiktok_description.txt">⬇️ Download Description</a>
-          `;
-        })
-        .catch(() => {
-          loading.style.display = "none";
-          result.innerHTML = "<p>❌ Error fetching TikTok data!</p>";
-        });
-    }
-  </script>
+  } catch(e){
+    loading.style.display="none";
+    result.innerHTML="<p>❌ Error fetching data!</p>";
+    console.error(e);
+  }
+}
+</script>
 
 </body>
-  </html>
+                                    </html>
